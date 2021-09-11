@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import '../../time_range_selector.dart';
 import '../models/painter_info.dart';
 import '../models/painter_state.dart';
-import 'panel.dart';
+import 'canvas_info.dart';
 
+final selectionColor = Colors.blue;
+final handlerRadius = 15.0;
 typedef TimeRangePainterCallback = void Function(
     TimeRangePainterInfo painterInfo);
 
@@ -28,6 +30,12 @@ class TimeRangePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var canvasInfo = CanvasInfo(size);
+
+    canvas.drawLine(
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      horizonLine,
+    );
 
     drawLineSegment(canvas, canvasInfo, hour(0), hour(6), nightLine);
 
@@ -51,6 +59,7 @@ class TimeRangePainter extends CustomPainter {
         startTimeHandlerLocalPosition: startTimeHandlerLocalPosition,
         endTimeHandlerLocalPosition: endTimeHandlerLocalPosition,
         canvasSize: size,
+        handlerRadius: handlerRadius,
       ),
     );
   }
@@ -74,7 +83,7 @@ class TimeRangePainter extends CustomPainter {
 
   void drawHandler(Canvas canvas, CanvasInfo canvasInfo, TimeOfDay t,
       {required bool active}) {
-    var color = active ? Colors.blue[100]! : Colors.blue;
+    var color = active ? selectionColor[500]! : selectionColor[900]!;
     final line = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
@@ -85,8 +94,8 @@ class TimeRangePainter extends CustomPainter {
       ..color = color;
 
     var center = canvasInfo.toScreen(t);
-    canvas.drawCircle(center, 15, line);
-    canvas.drawCircle(center, 10, fill);
+    canvas.drawCircle(center, handlerRadius, line);
+    canvas.drawCircle(center, handlerRadius * .7, fill);
   }
 
   @override
@@ -94,3 +103,24 @@ class TimeRangePainter extends CustomPainter {
     return true;
   }
 }
+
+final nightLine = Paint()
+  ..style = PaintingStyle.stroke
+  ..strokeWidth = 1
+  ..color = Colors.white;
+
+final dayLine = Paint()
+  ..style = PaintingStyle.stroke
+  ..strokeWidth = 1
+  ..color = Colors.black;
+
+final horizonLine = Paint()
+  ..style = PaintingStyle.stroke
+  ..strokeWidth = 1
+  ..color = Colors.black;
+
+final selectedLine = Paint()
+  ..style = PaintingStyle.stroke
+  ..strokeWidth = 8
+  ..strokeCap = StrokeCap.round
+  ..color = selectionColor;

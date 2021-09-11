@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,88 +5,9 @@ import 'package:flutter/material.dart';
 import '../../time_range_selector.dart';
 import '../models/painter_info.dart';
 import '../models/painter_state.dart';
+import 'canvas_info.dart';
 import 'gesture_detector.dart';
 import 'painter.dart';
-
-final nightLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.white;
-
-final dayLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.black;
-
-final selectedLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 8
-  ..strokeCap = StrokeCap.round
-  ..color = Colors.lightBlue;
-
-class CanvasInfo {
-  final Size size;
-  late List<Offset> points;
-
-  CanvasInfo(this.size) {
-    points = buildPoints();
-  }
-
-  List<Offset> buildPoints() {
-    var points = Iterable<int>.generate(width.toInt()).map(
-      (p) {
-        var xs = p.toDouble();
-        var x = toX(xs);
-        var y = sin(x);
-        var ys = toScreenY(y);
-        return Offset(xs, ys);
-      },
-    ).toList();
-    return points;
-  }
-
-  double get width => size.width;
-  double get height => size.height;
-
-  double transform(
-    double value,
-    double s1,
-    double e1,
-    double s2,
-    double e2,
-  ) {
-    return (value - s1) / (e1 - s1) * (e2 - s2) + s2;
-  }
-
-  double toX(double screenX) {
-    return transform(screenX, 0, width, -pi / 2, 3 * pi / 2);
-  }
-
-  double toScreenY(double y) {
-    return transform(y, -1, 1, height, 0);
-  }
-
-  double timeToScreenX(TimeOfDay t) {
-    var minutes = t.hour * 60 + t.minute;
-    return transform(minutes.toDouble(), 0, 24 * 60, 0, size.width);
-  }
-
-  TimeOfDay screenXToTime(double x) {
-    var minutes = transform(x, 0, size.width, 0, 24 * 60);
-    return TimeOfDay(hour: 0, minute: minutes.toInt());
-  }
-
-  Offset toScreen(TimeOfDay t) {
-    return points[timeToScreenX(t).toInt()];
-  }
-
-  List<Offset> segments(TimeOfDay start, TimeOfDay end) {
-    return points.sublist(
-      timeToScreenX(start).toInt(),
-      timeToScreenX(end).toInt(),
-    );
-  }
-}
 
 class TimeRangePanel extends StatefulWidget {
   final TimeRange timeRange;
@@ -102,6 +22,7 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
   late TimeRange timeRange;
   ActiveTimeHandler? activeTimeHandler;
   TimeRangePainterInfo? painterInfo;
+  Offset panOffset = Offset.zero;
 
   @override
   void initState() {
@@ -121,21 +42,24 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
     var box = context.findRenderObject() as RenderBox;
     var localPosition = box.globalToLocal(globalPosition);
 
-    var distanceToStart =
-        (localPosition - painterInfo!.startTimeHandlerLocalPosition)
-            .distanceSquared;
-    var distanceToEnd =
-        (localPosition - painterInfo!.endTimeHandlerLocalPosition)
-            .distanceSquared;
+    var startOffset =
+        localPosition - painterInfo!.startTimeHandlerLocalPosition;
+    var endOffset = (localPosition - painterInfo!.endTimeHandlerLocalPosition);
+    var distanceToStart = startOffset.distanceSquared;
+    var distanceToEnd = endOffset.distanceSquared;
 
-    activeTimeHandler = distanceToEnd < 50
+    var threshold = painterInfo!.handlerRadius * painterInfo!.handlerRadius;
+    activeTimeHandler = distanceToEnd < threshold
         ? ActiveTimeHandler.end
-        : distanceToStart < 50
+        : distanceToStart < threshold
             ? ActiveTimeHandler.start
             : null;
-
     if (activeTimeHandler != null) {
-      updateTimeHandler(localPosition);
+      setState(() {
+        panOffset = activeTimeHandler == ActiveTimeHandler.start
+            ? startOffset
+            : endOffset;
+      });
     }
 
     return activeTimeHandler != null;
@@ -145,26 +69,20 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
     if (painterInfo == null) return;
 
     var box = context.findRenderObject() as RenderBox;
-    var localPosition = box.globalToLocal(globalPosition);
+    var localPosition = box.globalToLocal(globalPosition) - panOffset;
 
     if (localPosition.dx >= 0 &&
         localPosition.dx < painterInfo!.canvasSize.width &&
         activeTimeHandler != null) {
-      updateTimeHandler(localPosition);
+      var canvasInfo = CanvasInfo(painterInfo!.canvasSize);
+      var time = canvasInfo.screenXToTime(localPosition.dx);
+      setState(() {
+        timeRange = timeRange.copyWith(
+          start: activeTimeHandler == ActiveTimeHandler.start ? time : null,
+          end: activeTimeHandler == ActiveTimeHandler.end ? time : null,
+        );
+      });
     }
-  }
-
-  void updateTimeHandler(Offset localPosition) {
-    if (painterInfo == null) return;
-
-    var canvasInfo = CanvasInfo(painterInfo!.canvasSize);
-    var time = canvasInfo.screenXToTime(localPosition.dx);
-    setState(() {
-      timeRange = timeRange.copyWith(
-        start: activeTimeHandler == ActiveTimeHandler.start ? time : null,
-        end: activeTimeHandler == ActiveTimeHandler.end ? time : null,
-      );
-    });
   }
 
   void onPanEnd(Offset globalPosition) {
