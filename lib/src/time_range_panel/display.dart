@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:time_range_selector/src/models/painter_state.dart';
+import 'package:time_range_selector/src/models/time_range.dart';
 
 class TimeRangeDisplay extends StatelessWidget {
-  final TimeRangePainterState painterState;
+  final TimeRange timeRange;
 
-  const TimeRangeDisplay(this.painterState);
+  const TimeRangeDisplay(this.timeRange);
 
   String _addLeadingZeroIfNeeded(int value) {
     return (value < 10) ? "0$value" : "$value";
@@ -24,8 +24,8 @@ class TimeRangeDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        buildTimeDisplay(painterState.timeRange.start),
-        buildTimeDisplay(painterState.timeRange.end),
+        buildTimeDisplay(timeRange.start),
+        buildTimeDisplay(timeRange.end),
       ],
     );
   }

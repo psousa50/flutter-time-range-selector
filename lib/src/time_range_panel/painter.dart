@@ -1,20 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:time_range_selector/src/models/state.dart';
 
 import '../models/painter_info.dart';
-import '../models/painter_state.dart';
 import 'canvas_info.dart';
 
 final selectionColor = Colors.blue;
 final handlerRadius = 15.0;
 
 class TimeRangePainter extends CustomPainter {
-  final TimeRangePainterState painterState;
+  final TimeRangeState timeRangeState;
   final TimeRangeInfoCallback onPainterInfoChanged;
 
   TimeRangePainter(
-    this.painterState,
+    this.timeRangeState,
     this.onPainterInfoChanged,
   );
 
@@ -38,10 +38,10 @@ class TimeRangePainter extends CustomPainter {
 
     drawLineSegment(canvas, canvasInfo, hour(18), hour(24), nightLine);
 
-    var timeRange = painterState.timeRange;
+    var timeRange = timeRangeState.timeRange;
     var start = timeRange.start;
     var end = timeRange.end;
-    var activeTimeHandler = painterState.activeTimeHandler;
+    var activeTimeHandler = timeRangeState.activeTimeHandler;
     drawLineSegment(canvas, canvasInfo, start!, end!, selectedLine);
 
     drawHandler(canvas, canvasInfo, timeRange.start!,

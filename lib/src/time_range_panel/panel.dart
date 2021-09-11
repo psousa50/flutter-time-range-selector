@@ -1,50 +1,32 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:time_range_selector/src/models/state.dart';
 
-import '../../time_range_selector.dart';
 import '../models/painter_info.dart';
-import '../models/painter_state.dart';
+import '../time_range_selector.dart';
 import 'canvas_info.dart';
 import 'gesture_detector.dart';
 import 'painter.dart';
 
 class TimeRangePanel extends StatefulWidget {
-  final TimeRange timeRange;
-  final TimeRangePainterStateCallback onPainterStateUpdated;
+  final TimeRangeSelectorCallback onTimeRangeChanged;
 
-  const TimeRangePanel(
-    this.timeRange,
-    this.onPainterStateUpdated,
-  );
+  const TimeRangePanel(this.onTimeRangeChanged);
 
   @override
   _TimeRangePanelState createState() => _TimeRangePanelState();
 }
 
 class _TimeRangePanelState extends State<TimeRangePanel> {
-  late TimeRangePainterState painterState;
   TimeRangePainterInfo? painterInfo;
   Offset panOffset = Offset.zero;
-
-  @override
-  void initState() {
-    painterState = TimeRangePainterState(timeRange: widget.timeRange);
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(TimeRangePanel oldWidget) {
-    painterState = painterState.copyWith(
-      timeRange: widget.timeRange,
-      activeTimeHandler: painterState.activeTimeHandler,
-    );
-    super.didUpdateWidget(oldWidget);
-  }
 
   bool onPanStart(Offset globalPosition) {
     if (painterInfo == null) return false;
 
+    var timeRangeState = Provider.of<TimeRangeState>(context, listen: false);
     var box = context.findRenderObject() as RenderBox;
     var localPosition = box.globalToLocal(globalPosition);
 
@@ -55,67 +37,61 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
     var distanceToEnd = endOffset.distanceSquared;
 
     var threshold = painterInfo!.handlerRadius * painterInfo!.handlerRadius;
-    painterState = painterState.copyWith(
+    timeRangeState.updateWith(
         activeTimeHandler: distanceToEnd < threshold
             ? ActiveTimeHandler.end
             : distanceToStart < threshold
                 ? ActiveTimeHandler.start
                 : null);
-    if (painterState.activeTimeHandler != null) {
-      setState(() {
-        panOffset = painterState.activeTimeHandler == ActiveTimeHandler.start
-            ? startOffset
-            : endOffset;
-        widget.onPainterStateUpdated(painterState);
-      });
+    if (timeRangeState.activeTimeHandler != null) {
+      panOffset = timeRangeState.activeTimeHandler == ActiveTimeHandler.start
+          ? startOffset
+          : endOffset;
     }
 
-    return painterState.activeTimeHandler != null;
+    return timeRangeState.activeTimeHandler != null;
   }
 
   void onPanUpdate(Offset globalPosition) {
     if (painterInfo == null) return;
 
+    var timeRangeState = Provider.of<TimeRangeState>(context, listen: false);
     var box = context.findRenderObject() as RenderBox;
     var localPosition = box.globalToLocal(globalPosition) - panOffset;
 
     if (localPosition.dx >= 0 &&
         localPosition.dx < painterInfo!.canvasSize.width &&
-        painterState.activeTimeHandler != null) {
+        timeRangeState.activeTimeHandler != null) {
       var canvasInfo = CanvasInfo(painterInfo!.canvasSize);
       var time = canvasInfo.screenXToTime(localPosition.dx);
-      var newTimeRange = painterState.timeRange.copyWith(
-        start: painterState.activeTimeHandler == ActiveTimeHandler.start
+      var newTimeRange = timeRangeState.timeRange.copyWith(
+        start: timeRangeState.activeTimeHandler == ActiveTimeHandler.start
             ? time
             : null,
-        end: painterState.activeTimeHandler == ActiveTimeHandler.end
+        end: timeRangeState.activeTimeHandler == ActiveTimeHandler.end
             ? time
             : null,
       );
-      var newPainterState = painterState.copyWith(
-        timeRange: newTimeRange,
-        activeTimeHandler: painterState.activeTimeHandler,
-      );
-      if (newPainterState.timeRange.inverted) {
-        newPainterState = newPainterState.copyWith(
-            timeRange: newPainterState.timeRange.invert(),
+
+      if (newTimeRange.inverted) {
+        timeRangeState.updateWith(
+            timeRange: newTimeRange.invert(),
             activeTimeHandler:
-                newPainterState.activeTimeHandler == ActiveTimeHandler.start
+                timeRangeState.activeTimeHandler == ActiveTimeHandler.start
                     ? ActiveTimeHandler.end
                     : ActiveTimeHandler.start);
+      } else {
+        timeRangeState.updateWith(
+            timeRange: newTimeRange,
+            activeTimeHandler: timeRangeState.activeTimeHandler);
       }
-      setState(() {
-        painterState = newPainterState;
-        widget.onPainterStateUpdated(painterState);
-      });
     }
   }
 
   void onPanEnd(Offset globalPosition) {
-    setState(() {
-      painterState = painterState.copyWith(activeTimeHandler: null);
-      widget.onPainterStateUpdated(painterState);
-    });
+    var timeRangeState = Provider.of<TimeRangeState>(context, listen: false);
+    timeRangeState.updateWith(activeTimeHandler: null);
+    widget.onTimeRangeChanged(timeRangeState.timeRange);
   }
 
   void onPainterInfoChanged(TimeRangePainterInfo painterInfo) {
@@ -124,16 +100,18 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
 
   @override
   Widget build(BuildContext context) {
-    return TimeGestureDetector(
-      onPanStart: onPanStart,
-      onPanUpdate: onPanUpdate,
-      onPanEnd: onPanEnd,
-      child: CustomPaint(
-        painter: TimeRangePainter(
-          painterState,
-          onPainterInfoChanged,
+    return Consumer<TimeRangeState>(builder: (_, state, __) {
+      return TimeGestureDetector(
+        onPanStart: onPanStart,
+        onPanUpdate: onPanUpdate,
+        onPanEnd: onPanEnd,
+        child: CustomPaint(
+          painter: TimeRangePainter(
+            state,
+            onPainterInfoChanged,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

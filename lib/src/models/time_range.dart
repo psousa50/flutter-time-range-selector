@@ -24,4 +24,9 @@ class TimeRange {
       end: end ?? this.end,
     );
   }
+
+  @override
+  String toString() {
+    return "$start - $end";
+  }
 }

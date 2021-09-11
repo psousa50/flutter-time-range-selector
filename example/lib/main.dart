@@ -8,6 +8,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  void onTimeRangeChanged(TimeRange timeRange) {
+    print(timeRange);
+  }
+
   @override
   Widget build(BuildContext context) {
     var timeRange = TimeRange(
@@ -19,7 +23,7 @@ class MyApp extends StatelessWidget {
         child: Scaffold(
           body: TimeRangeSelector(
             timeRange: timeRange,
-            onTimeRangeChanged: (_) {},
+            onTimeRangeChanged: onTimeRangeChanged,
           ),
         ),
       ),
