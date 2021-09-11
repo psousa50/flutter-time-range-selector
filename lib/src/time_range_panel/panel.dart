@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:time_range_selector/src/models/state.dart';
+import 'package:time_range_selector/src/models/time_range_state.dart';
 
 import '../models/painter_info.dart';
 import '../time_range_selector.dart';

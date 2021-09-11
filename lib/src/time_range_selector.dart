@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'models/state.dart';
+import 'models/time_range_state.dart';
 import 'models/time_range.dart';
 import 'time_range_panel/display.dart';
 import 'time_range_panel/panel.dart';
@@ -39,12 +39,14 @@ class TimeRangeSelector extends StatelessWidget {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: [
-                                Colors.white,
-                                Colors.black,
+                                Colors.grey[300]!,
+                                Colors.grey[300]!,
+                                Colors.grey[900]!,
+                                Colors.grey[900]!,
                               ],
                               begin: const FractionalOffset(0.0, 0.0),
                               end: const FractionalOffset(0.0, 1.0),
-                              stops: [0.0, 1.0],
+                              stops: [0.0, 0.3, 0.7, 1.0],
                               tileMode: TileMode.clamp),
                         ),
                       ),

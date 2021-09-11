@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:time_range_selector/src/models/state.dart';
+import 'package:time_range_selector/src/models/time_range_state.dart';
 
 import '../models/painter_info.dart';
 import 'canvas_info.dart';
@@ -18,7 +18,7 @@ class TimeRangePainter extends CustomPainter {
     this.onPainterInfoChanged,
   );
 
-  TimeOfDay hour(int hour) {
+  TimeOfDay fromHour(int hour) {
     return TimeOfDay(hour: hour, minute: 0);
   }
 
@@ -32,11 +32,9 @@ class TimeRangePainter extends CustomPainter {
       horizonLine,
     );
 
-    drawLineSegment(canvas, canvasInfo, hour(0), hour(6), nightLine);
-
-    drawLineSegment(canvas, canvasInfo, hour(6), hour(18), dayLine);
-
-    drawLineSegment(canvas, canvasInfo, hour(18), hour(24), nightLine);
+    drawLineSegment(canvas, canvasInfo, fromHour(0), fromHour(6), nightLine);
+    drawLineSegment(canvas, canvasInfo, fromHour(6), fromHour(18), dayLine);
+    drawLineSegment(canvas, canvasInfo, fromHour(18), fromHour(24), nightLine);
 
     var timeRange = timeRangeState.timeRange;
     var start = timeRange.start;
@@ -48,6 +46,12 @@ class TimeRangePainter extends CustomPainter {
         active: activeTimeHandler == ActiveTimeHandler.start);
     drawHandler(canvas, canvasInfo, timeRange.end!,
         active: activeTimeHandler == ActiveTimeHandler.end);
+
+    drawXLabel(canvas, canvasInfo, 0, labelOffset: 0.5);
+    drawXLabel(canvas, canvasInfo, 6, labelOffset: 1);
+    drawXLabel(canvas, canvasInfo, 12);
+    drawXLabel(canvas, canvasInfo, 18, labelOffset: 1);
+    drawXLabel(canvas, canvasInfo, 24, labelOffset: -0.5);
 
     var startTimeHandlerLocalPosition = canvasInfo.toScreen(timeRange.start!);
     var endTimeHandlerLocalPosition = canvasInfo.toScreen(timeRange.end!);
@@ -93,6 +97,32 @@ class TimeRangePainter extends CustomPainter {
     var center = canvasInfo.toScreen(t);
     canvas.drawCircle(center, handlerRadius, line);
     canvas.drawCircle(center, handlerRadius * .7, fill);
+  }
+
+  void drawXLabel(Canvas canvas, CanvasInfo canvasInfo, int hour,
+      {double labelOffset = 0}) {
+    final textStyle = TextStyle(
+      color: Colors.blue[900]!,
+      fontSize: 16,
+    );
+    final textSpan = TextSpan(
+      text: hour.toString(),
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: canvasInfo.width,
+    );
+
+    var x = canvasInfo.timeToScreenX(fromHour(hour));
+    x = x - textPainter.width * (0.5 - labelOffset);
+    var y = canvasInfo.height / 2;
+    final offset = Offset(x, y);
+    textPainter.paint(canvas, offset);
   }
 
   @override
