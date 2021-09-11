@@ -11,28 +11,34 @@ import 'painter.dart';
 
 class TimeRangePanel extends StatefulWidget {
   final TimeRange timeRange;
+  final TimeRangePainterStateCallback onPainterStateUpdated;
 
-  const TimeRangePanel(this.timeRange);
+  const TimeRangePanel(
+    this.timeRange,
+    this.onPainterStateUpdated,
+  );
 
   @override
   _TimeRangePanelState createState() => _TimeRangePanelState();
 }
 
 class _TimeRangePanelState extends State<TimeRangePanel> {
-  late TimeRange timeRange;
-  ActiveTimeHandler? activeTimeHandler;
+  late TimeRangePainterState painterState;
   TimeRangePainterInfo? painterInfo;
   Offset panOffset = Offset.zero;
 
   @override
   void initState() {
-    timeRange = widget.timeRange;
+    painterState = TimeRangePainterState(timeRange: widget.timeRange);
     super.initState();
   }
 
   @override
   void didUpdateWidget(TimeRangePanel oldWidget) {
-    timeRange = widget.timeRange;
+    painterState = painterState.copyWith(
+      timeRange: widget.timeRange,
+      activeTimeHandler: painterState.activeTimeHandler,
+    );
     super.didUpdateWidget(oldWidget);
   }
 
@@ -49,20 +55,22 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
     var distanceToEnd = endOffset.distanceSquared;
 
     var threshold = painterInfo!.handlerRadius * painterInfo!.handlerRadius;
-    activeTimeHandler = distanceToEnd < threshold
-        ? ActiveTimeHandler.end
-        : distanceToStart < threshold
-            ? ActiveTimeHandler.start
-            : null;
-    if (activeTimeHandler != null) {
+    painterState = painterState.copyWith(
+        activeTimeHandler: distanceToEnd < threshold
+            ? ActiveTimeHandler.end
+            : distanceToStart < threshold
+                ? ActiveTimeHandler.start
+                : null);
+    if (painterState.activeTimeHandler != null) {
       setState(() {
-        panOffset = activeTimeHandler == ActiveTimeHandler.start
+        panOffset = painterState.activeTimeHandler == ActiveTimeHandler.start
             ? startOffset
             : endOffset;
+        widget.onPainterStateUpdated(painterState);
       });
     }
 
-    return activeTimeHandler != null;
+    return painterState.activeTimeHandler != null;
   }
 
   void onPanUpdate(Offset globalPosition) {
@@ -73,28 +81,40 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
 
     if (localPosition.dx >= 0 &&
         localPosition.dx < painterInfo!.canvasSize.width &&
-        activeTimeHandler != null) {
+        painterState.activeTimeHandler != null) {
       var canvasInfo = CanvasInfo(painterInfo!.canvasSize);
       var time = canvasInfo.screenXToTime(localPosition.dx);
-      var newTimeRange = timeRange.copyWith(
-        start: activeTimeHandler == ActiveTimeHandler.start ? time : null,
-        end: activeTimeHandler == ActiveTimeHandler.end ? time : null,
+      var newTimeRange = painterState.timeRange.copyWith(
+        start: painterState.activeTimeHandler == ActiveTimeHandler.start
+            ? time
+            : null,
+        end: painterState.activeTimeHandler == ActiveTimeHandler.end
+            ? time
+            : null,
       );
-      if (newTimeRange.inverted) {
-        newTimeRange = newTimeRange.invert();
-        activeTimeHandler = activeTimeHandler == ActiveTimeHandler.start
-            ? ActiveTimeHandler.end
-            : ActiveTimeHandler.start;
+      var newPainterState = painterState.copyWith(
+        timeRange: newTimeRange,
+        activeTimeHandler: painterState.activeTimeHandler,
+      );
+      if (newPainterState.timeRange.inverted) {
+        newPainterState = newPainterState.copyWith(
+            timeRange: newPainterState.timeRange.invert(),
+            activeTimeHandler:
+                newPainterState.activeTimeHandler == ActiveTimeHandler.start
+                    ? ActiveTimeHandler.end
+                    : ActiveTimeHandler.start);
       }
       setState(() {
-        timeRange = newTimeRange;
+        painterState = newPainterState;
+        widget.onPainterStateUpdated(painterState);
       });
     }
   }
 
   void onPanEnd(Offset globalPosition) {
     setState(() {
-      activeTimeHandler = null;
+      painterState = painterState.copyWith(activeTimeHandler: null);
+      widget.onPainterStateUpdated(painterState);
     });
   }
 
@@ -110,8 +130,7 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
       onPanEnd: onPanEnd,
       child: CustomPaint(
         painter: TimeRangePainter(
-          timeRange,
-          activeTimeHandler,
+          painterState,
           onPainterInfoChanged,
         ),
       ),

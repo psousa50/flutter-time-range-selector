@@ -1,5 +1,7 @@
 import 'package:flutter/painting.dart';
 
+typedef TimeRangeInfoCallback = void Function(TimeRangePainterInfo painterInfo);
+
 class TimeRangePainterInfo {
   final Offset startTimeHandlerLocalPosition;
   final Offset endTimeHandlerLocalPosition;
