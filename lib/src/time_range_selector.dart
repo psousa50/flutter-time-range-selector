@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'time_range.dart';
-import 'time_range_panel.dart';
+import 'models/time_range.dart';
+import 'time_range_panel/panel.dart';
 
 typedef TimeRangeSelectorCallback = void Function(TimeRange timeRange);
 
