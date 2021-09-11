@@ -76,11 +76,18 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
         activeTimeHandler != null) {
       var canvasInfo = CanvasInfo(painterInfo!.canvasSize);
       var time = canvasInfo.screenXToTime(localPosition.dx);
+      var newTimeRange = timeRange.copyWith(
+        start: activeTimeHandler == ActiveTimeHandler.start ? time : null,
+        end: activeTimeHandler == ActiveTimeHandler.end ? time : null,
+      );
+      if (newTimeRange.inverted) {
+        newTimeRange = newTimeRange.invert();
+        activeTimeHandler = activeTimeHandler == ActiveTimeHandler.start
+            ? ActiveTimeHandler.end
+            : ActiveTimeHandler.start;
+      }
       setState(() {
-        timeRange = timeRange.copyWith(
-          start: activeTimeHandler == ActiveTimeHandler.start ? time : null,
-          end: activeTimeHandler == ActiveTimeHandler.end ? time : null,
-        );
+        timeRange = newTimeRange;
       });
     }
   }

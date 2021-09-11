@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../models/extensions.dart';
+
 class CanvasInfo {
   final Size size;
   late List<Offset> points;
@@ -46,13 +48,13 @@ class CanvasInfo {
   }
 
   double timeToScreenX(TimeOfDay t) {
-    var minutes = t.hour * 60 + t.minute;
+    var minutes = t.minutes;
     return transform(minutes.toDouble(), 0, 24 * 60, 0, size.width);
   }
 
   TimeOfDay screenXToTime(double x) {
-    var minutes = transform(x, 0, size.width, 0, 24 * 60);
-    return TimeOfDay(hour: 0, minute: minutes.toInt());
+    var minutes = transform(x, 0, size.width, 0, 24 * 60).round();
+    return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
   }
 
   Offset toScreen(TimeOfDay t) {
@@ -60,9 +62,9 @@ class CanvasInfo {
   }
 
   List<Offset> segments(TimeOfDay start, TimeOfDay end) {
-    return points.sublist(
-      timeToScreenX(start).toInt(),
-      timeToScreenX(end).toInt(),
-    );
+    var x1 = timeToScreenX(start).toInt();
+    var x2 = timeToScreenX(end).toInt();
+
+    return points.sublist(x1, x2);
   }
 }
