@@ -61,8 +61,10 @@ class TimeRangePainter extends CustomPainter {
     drawXLabel(canvas, canvasInfo, 18);
     drawXLabel(canvas, canvasInfo, 24, labelOffset: -0.5);
 
-    var startTimeHandlerLocalPosition = canvasInfo.toScreen(timeRange.start!);
-    var endTimeHandlerLocalPosition = canvasInfo.toScreen(timeRange.end!);
+    var startTimeHandlerLocalPosition =
+        canvasInfo.timeOfDayToScreen(timeRange.start!);
+    var endTimeHandlerLocalPosition =
+        canvasInfo.timeOfDayToScreen(timeRange.end!);
     onPainterInfoChanged(
       TimeRangePainterInfo(
         startTimeHandlerLocalPosition: startTimeHandlerLocalPosition,
@@ -82,7 +84,7 @@ class TimeRangePainter extends CustomPainter {
   ) {
     canvas.drawPoints(
       PointMode.polygon,
-      canvasInfo.segments(
+      canvasInfo.timeLineSegment(
         start,
         end,
       ),
@@ -102,14 +104,14 @@ class TimeRangePainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = color;
 
-    var center = canvasInfo.toScreen(t);
+    var center = canvasInfo.timeOfDayToScreen(t);
     canvas.drawCircle(center, handlerRadius, line);
     canvas.drawCircle(center, handlerRadius * .7, fill);
   }
 
   void drawTicks(Canvas canvas, CanvasState canvasInfo, int step, length) {
     for (var i = 0; i < 24 * 60; i += step) {
-      var x = canvasInfo.timeToScreenX(fromMinutes(i));
+      var x = canvasInfo.timeToScreen(fromMinutes(i));
       var y = canvasInfo.zeroY;
       canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
     }
@@ -130,7 +132,7 @@ class TimeRangePainter extends CustomPainter {
       maxWidth: canvasInfo.width,
     );
 
-    var x = canvasInfo.timeToScreenX(fromHour(hour));
+    var x = canvasInfo.timeToScreen(fromHour(hour));
     x = x - textPainter.width * (0.5 - labelOffset);
     var y = canvasInfo.zeroY + textPainter.height;
     final offset = Offset(x, y);
@@ -146,12 +148,12 @@ class TimeRangePainter extends CustomPainter {
 final nightLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
-  ..color = Colors.red;
+  ..color = Colors.white;
 
 final dayLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
-  ..color = Colors.blue;
+  ..color = Colors.black;
 
 final horizonLine = Paint()
   ..style = PaintingStyle.stroke

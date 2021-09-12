@@ -63,7 +63,7 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
         localPosition.dx < painterInfo!.canvasSize.width &&
         timeRangeState.activeTimeHandler != null) {
       var canvasInfo = CanvasState(painterInfo!.canvasSize);
-      var time = canvasInfo.screenXToTime(localPosition.dx);
+      var time = canvasInfo.screenToTimeOfDay(localPosition.dx);
       var newTimeRange = timeRangeState.timeRange.copyWith(
         start: timeRangeState.activeTimeHandler == ActiveTimeHandler.start
             ? time
