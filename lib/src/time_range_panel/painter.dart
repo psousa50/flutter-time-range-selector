@@ -22,13 +22,17 @@ class TimeRangePainter extends CustomPainter {
     return TimeOfDay(hour: hour, minute: 0);
   }
 
+  TimeOfDay fromMinutes(int minutes) {
+    return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     var canvasInfo = CanvasInfo(size);
 
     canvas.drawLine(
-      Offset(0, size.height / 2),
-      Offset(size.width, size.height / 2),
+      Offset(0, canvasInfo.zeroY),
+      Offset(size.width, canvasInfo.zeroY),
       horizonLine,
     );
 
@@ -47,10 +51,14 @@ class TimeRangePainter extends CustomPainter {
     drawHandler(canvas, canvasInfo, timeRange.end!,
         active: activeTimeHandler == ActiveTimeHandler.end);
 
+    drawTicks(canvas, canvasInfo, 1 * 60, 5);
+    drawTicks(canvas, canvasInfo, 3 * 60, 10);
+    drawTicks(canvas, canvasInfo, 6 * 60, 20);
+
     drawXLabel(canvas, canvasInfo, 0, labelOffset: 0.5);
-    drawXLabel(canvas, canvasInfo, 6, labelOffset: 1);
+    drawXLabel(canvas, canvasInfo, 6);
     drawXLabel(canvas, canvasInfo, 12);
-    drawXLabel(canvas, canvasInfo, 18, labelOffset: 1);
+    drawXLabel(canvas, canvasInfo, 18);
     drawXLabel(canvas, canvasInfo, 24, labelOffset: -0.5);
 
     var startTimeHandlerLocalPosition = canvasInfo.toScreen(timeRange.start!);
@@ -99,12 +107,16 @@ class TimeRangePainter extends CustomPainter {
     canvas.drawCircle(center, handlerRadius * .7, fill);
   }
 
+  void drawTicks(Canvas canvas, CanvasInfo canvasInfo, int step, length) {
+    for (var i = 0; i < 24 * 60; i += step) {
+      var x = canvasInfo.timeToScreenX(fromMinutes(i));
+      var y = canvasInfo.zeroY;
+      canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
+    }
+  }
+
   void drawXLabel(Canvas canvas, CanvasInfo canvasInfo, int hour,
       {double labelOffset = 0}) {
-    final textStyle = TextStyle(
-      color: Colors.blue[900]!,
-      fontSize: 16,
-    );
     final textSpan = TextSpan(
       text: hour.toString(),
       style: textStyle,
@@ -120,7 +132,7 @@ class TimeRangePainter extends CustomPainter {
 
     var x = canvasInfo.timeToScreenX(fromHour(hour));
     x = x - textPainter.width * (0.5 - labelOffset);
-    var y = canvasInfo.height / 2;
+    var y = canvasInfo.zeroY + textPainter.height;
     final offset = Offset(x, y);
     textPainter.paint(canvas, offset);
   }
@@ -134,20 +146,30 @@ class TimeRangePainter extends CustomPainter {
 final nightLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
-  ..color = Colors.white;
+  ..color = Colors.red;
 
 final dayLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
-  ..color = Colors.black;
+  ..color = Colors.blue;
 
 final horizonLine = Paint()
   ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.black;
+  ..strokeWidth = 2
+  ..color = Colors.grey;
 
 final selectedLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 8
   ..strokeCap = StrokeCap.round
   ..color = selectionColor;
+
+final tickLine = Paint()
+  ..style = PaintingStyle.stroke
+  ..strokeWidth = 1
+  ..color = Colors.grey;
+
+final textStyle = TextStyle(
+  color: Colors.grey,
+  fontSize: 16,
+);

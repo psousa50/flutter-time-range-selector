@@ -8,21 +8,31 @@ import '../models/extensions.dart';
 class CanvasInfo {
   final Size size;
   late List<Offset> points;
+  final margin = 20.0;
+  final minX = 0.0;
+  final maxX = 24 * 60.0;
+  late double minSX;
+  late double maxSX;
 
   CanvasInfo(this.size) {
+    minSX = 0 + margin;
+    maxSX = size.width - margin;
     points = buildPoints();
   }
 
+  double get zeroY => height / 2;
+
   List<Offset> buildPoints() {
-    var points = Iterable<int>.generate(width.toInt()).map(
+    var points = Iterable<int>.generate((maxSX - minSX).toInt()).map(
       (p) {
-        var xs = p.toDouble();
+        var xs = (p + minSX).toDouble();
         var x = toX(xs);
         var y = sin(x);
         var ys = toScreenY(y);
         return Offset(xs, ys);
       },
     ).toList();
+    print(points.length);
     return points;
   }
 
@@ -40,7 +50,7 @@ class CanvasInfo {
   }
 
   double toX(double screenX) {
-    return transform(screenX, 0, width, -pi / 2, 3 * pi / 2);
+    return transform(screenX, minSX, maxSX, -pi / 2, 3 * pi / 2);
   }
 
   double toScreenY(double y) {
@@ -48,22 +58,21 @@ class CanvasInfo {
   }
 
   double timeToScreenX(TimeOfDay t) {
-    var minutes = t.minutes;
-    return transform(minutes.toDouble(), 0, 24 * 60, 0, size.width);
+    return transform(t.minutes.toDouble(), minX, maxX, minSX, maxSX);
   }
 
   TimeOfDay screenXToTime(double x) {
-    var minutes = transform(x, 0, size.width, 0, 24 * 60).round();
+    var minutes = transform(x, minSX, maxSX, minX, maxX).round();
     return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
   }
 
   Offset toScreen(TimeOfDay t) {
-    return points[timeToScreenX(t).toInt()];
+    return points[timeToScreenX(t).toInt() - margin.toInt()];
   }
 
   List<Offset> segments(TimeOfDay start, TimeOfDay end) {
-    var x1 = timeToScreenX(start).toInt();
-    var x2 = timeToScreenX(end).toInt();
+    var x1 = timeToScreenX(start).toInt() - margin.toInt();
+    var x2 = timeToScreenX(end).toInt() - margin.toInt();
 
     return points.sublist(x1, x2);
   }

@@ -35,20 +35,19 @@ class TimeRangeSelector extends StatelessWidget {
                   children: [
                     AspectRatio(
                       aspectRatio: 2,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                                Colors.grey[300]!,
-                                Colors.grey[300]!,
-                                Colors.grey[900]!,
-                                Colors.grey[900]!,
-                              ],
-                              begin: const FractionalOffset(0.0, 0.0),
-                              end: const FractionalOffset(0.0, 1.0),
-                              stops: [0.0, 0.3, 0.7, 1.0],
-                              tileMode: TileMode.clamp),
-                        ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     AspectRatio(

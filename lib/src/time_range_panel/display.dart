@@ -19,13 +19,16 @@ class TimeRangeDisplay extends StatelessWidget {
   Widget buildTimeDisplay(TimeOfDay? t) {
     return Expanded(
       child: Center(
-        child: Text(
-          timeString(t),
-          style: TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            color: Colors.blue,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+          child: Text(
+            timeString(t),
+            style: TextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              color: Colors.blue,
+            ),
           ),
         ),
       ),
