@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/extensions.dart';
 
-class CanvasInfo {
+class CanvasState {
   final Size size;
   late List<Offset> points;
   final margin = 20.0;
@@ -14,7 +14,7 @@ class CanvasInfo {
   late double minSX;
   late double maxSX;
 
-  CanvasInfo(this.size) {
+  CanvasState(this.size) {
     minSX = 0 + margin;
     maxSX = size.width - margin;
     points = buildPoints();

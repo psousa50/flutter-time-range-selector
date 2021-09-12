@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:time_range_selector/src/models/time_range_state.dart';
 
 import '../models/painter_info.dart';
-import 'canvas_info.dart';
+import 'canvas_state.dart';
 
 final selectionColor = Colors.blue;
 final handlerRadius = 15.0;
@@ -28,7 +28,7 @@ class TimeRangePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var canvasInfo = CanvasInfo(size);
+    var canvasInfo = CanvasState(size);
 
     canvas.drawLine(
       Offset(0, canvasInfo.zeroY),
@@ -75,7 +75,7 @@ class TimeRangePainter extends CustomPainter {
 
   void drawLineSegment(
     Canvas canvas,
-    CanvasInfo canvasInfo,
+    CanvasState canvasInfo,
     TimeOfDay start,
     TimeOfDay end,
     Paint paint,
@@ -90,7 +90,7 @@ class TimeRangePainter extends CustomPainter {
     );
   }
 
-  void drawHandler(Canvas canvas, CanvasInfo canvasInfo, TimeOfDay t,
+  void drawHandler(Canvas canvas, CanvasState canvasInfo, TimeOfDay t,
       {required bool active}) {
     var color = active ? selectionColor[500]! : selectionColor[900]!;
     final line = Paint()
@@ -107,7 +107,7 @@ class TimeRangePainter extends CustomPainter {
     canvas.drawCircle(center, handlerRadius * .7, fill);
   }
 
-  void drawTicks(Canvas canvas, CanvasInfo canvasInfo, int step, length) {
+  void drawTicks(Canvas canvas, CanvasState canvasInfo, int step, length) {
     for (var i = 0; i < 24 * 60; i += step) {
       var x = canvasInfo.timeToScreenX(fromMinutes(i));
       var y = canvasInfo.zeroY;
@@ -115,7 +115,7 @@ class TimeRangePainter extends CustomPainter {
     }
   }
 
-  void drawXLabel(Canvas canvas, CanvasInfo canvasInfo, int hour,
+  void drawXLabel(Canvas canvas, CanvasState canvasInfo, int hour,
       {double labelOffset = 0}) {
     final textSpan = TextSpan(
       text: hour.toString(),
