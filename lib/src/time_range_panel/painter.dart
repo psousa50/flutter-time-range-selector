@@ -55,11 +55,15 @@ class TimeRangePainter extends CustomPainter {
     drawTicks(canvas, canvasInfo, 3 * 60, 10);
     drawTicks(canvas, canvasInfo, 6 * 60, 20);
 
-    drawXLabel(canvas, canvasInfo, 0, labelOffset: 0.5);
+    drawXLabel(canvas, canvasInfo, 0);
+    drawXLabel(canvas, canvasInfo, 3, small: true);
     drawXLabel(canvas, canvasInfo, 6);
+    drawXLabel(canvas, canvasInfo, 9, small: true);
     drawXLabel(canvas, canvasInfo, 12);
+    drawXLabel(canvas, canvasInfo, 15, small: true);
     drawXLabel(canvas, canvasInfo, 18);
-    drawXLabel(canvas, canvasInfo, 24, labelOffset: -0.5);
+    drawXLabel(canvas, canvasInfo, 21, small: true);
+    drawXLabel(canvas, canvasInfo, 24);
 
     var startTimeHandlerLocalPosition =
         canvasInfo.timeOfDayToScreen(timeRange.start!);
@@ -110,18 +114,22 @@ class TimeRangePainter extends CustomPainter {
   }
 
   void drawTicks(Canvas canvas, CanvasState canvasInfo, int step, length) {
-    for (var i = 0; i < 24 * 60; i += step) {
+    for (var i = 0; i <= 24 * 60; i += step) {
       var x = canvasInfo.timeToScreen(fromMinutes(i));
       var y = canvasInfo.zeroY;
       canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
     }
   }
 
-  void drawXLabel(Canvas canvas, CanvasState canvasInfo, int hour,
-      {double labelOffset = 0}) {
+  void drawXLabel(
+    Canvas canvas,
+    CanvasState canvasInfo,
+    int hour, {
+    bool small = false,
+  }) {
     final textSpan = TextSpan(
       text: hour.toString(),
-      style: textStyle,
+      style: small ? smallLabelTextStyle : labelTextStyle,
     );
     final textPainter = TextPainter(
       text: textSpan,
@@ -133,7 +141,7 @@ class TimeRangePainter extends CustomPainter {
     );
 
     var x = canvasInfo.timeToScreen(fromHour(hour));
-    x = x - textPainter.width * (0.5 - labelOffset);
+    x = x - textPainter.width * 0.5;
     var y = canvasInfo.zeroY + textPainter.height;
     final offset = Offset(x, y);
     textPainter.paint(canvas, offset);
@@ -171,7 +179,12 @@ final tickLine = Paint()
   ..strokeWidth = 1
   ..color = Colors.grey;
 
-final textStyle = TextStyle(
+final labelTextStyle = TextStyle(
   color: Colors.grey,
   fontSize: 16,
+);
+
+final smallLabelTextStyle = TextStyle(
+  color: Colors.grey,
+  fontSize: 12,
 );
