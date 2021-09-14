@@ -16,19 +16,30 @@ class TimeRangeDisplay extends StatelessWidget {
         : "${_addLeadingZeroIfNeeded(t.hour)}:${_addLeadingZeroIfNeeded(t.minute)}";
   }
 
-  Widget buildTimeDisplay(TimeOfDay? t) {
+  Widget buildTimeDisplay(BuildContext context, TimeOfDay? t, String title) {
     return Expanded(
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
-          child: Text(
-            timeString(t),
-            style: TextStyle(
-              fontSize: 34,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-              color: Colors.blue,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: Column(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).selectedRowColor,
+                ),
+              ),
+              Text(
+                timeString(t),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Theme.of(context).selectedRowColor,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -37,11 +48,14 @@ class TimeRangeDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        buildTimeDisplay(timeRange.start),
-        buildTimeDisplay(timeRange.end),
-      ],
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: Row(
+        children: [
+          buildTimeDisplay(context, timeRange.start, "From"),
+          buildTimeDisplay(context, timeRange.end, "To"),
+        ],
+      ),
     );
   }
 }

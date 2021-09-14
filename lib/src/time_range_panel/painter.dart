@@ -177,14 +177,14 @@ final selectedLine = Paint()
 final tickLine = Paint()
   ..style = PaintingStyle.stroke
   ..strokeWidth = 1
-  ..color = Colors.grey;
+  ..color = Colors.grey[300]!;
 
 final labelTextStyle = TextStyle(
-  color: Colors.grey,
+  color: Colors.grey[300],
   fontSize: 16,
 );
 
 final smallLabelTextStyle = TextStyle(
-  color: Colors.grey,
+  color: Colors.grey[300],
   fontSize: 12,
 );

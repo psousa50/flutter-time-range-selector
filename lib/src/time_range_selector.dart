@@ -23,42 +23,37 @@ class TimeRangeSelector extends StatelessWidget {
     var timeRangeState = TimeRangeState(timeRange: timeRange);
     return ChangeNotifierProvider<TimeRangeState>.value(
         value: timeRangeState,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Consumer<TimeRangeState>(builder: (context, state, _) {
-                return TimeRangeDisplay(state.timeRange);
-              }),
-              Expanded(
-                child: Stack(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 2,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              color: Colors.white,
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+        child: Column(
+          children: [
+            Consumer<TimeRangeState>(builder: (context, state, _) {
+              return TimeRangeDisplay(state.timeRange);
+            }),
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 3 / 2,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          color: Colors.blue[100],
+                        ),
                       ),
-                    ),
-                    AspectRatio(
-                      aspectRatio: 2,
-                      child: TimeRangePanel(onTimeRangeChanged),
-                    ),
-                  ],
+                      Expanded(
+                        child: Container(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                AspectRatio(
+                  aspectRatio: 3 / 2,
+                  child: TimeRangePanel(onTimeRangeChanged),
+                ),
+              ],
+            ),
+          ],
         ));
   }
 }

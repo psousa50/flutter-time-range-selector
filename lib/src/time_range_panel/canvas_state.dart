@@ -55,6 +55,7 @@ class CanvasState {
     var minutes = screenToMinutes.toX(sx).round();
     minutes = max(0, minutes);
     minutes = min(24 * 60 - 1, minutes);
+    minutes = minutes ~/ 10 * 10;
     return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
   }
 
