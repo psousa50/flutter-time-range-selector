@@ -11,6 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      supportedLocales:
+          TimeRangeSelectorLocalizations.delegate.supportedLocales,
+      localizationsDelegates: [
+        TimeRangeSelectorLocalizations.delegate,
+      ],
       home: SafeArea(
         child: Scaffold(
           body: Home(),

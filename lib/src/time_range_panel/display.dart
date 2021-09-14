@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_range_selector/generated/l10n.dart';
 import 'package:time_range_selector/src/models/time_range.dart';
 
 class TimeRangeDisplay extends StatelessWidget {
@@ -52,8 +53,8 @@ class TimeRangeDisplay extends StatelessWidget {
       color: Theme.of(context).primaryColor,
       child: Row(
         children: [
-          buildTimeDisplay(context, timeRange.start, "From"),
-          buildTimeDisplay(context, timeRange.end, "To"),
+          buildTimeDisplay(context, timeRange.start, S.of(context).from),
+          buildTimeDisplay(context, timeRange.end, S.of(context).to),
         ],
       ),
     );

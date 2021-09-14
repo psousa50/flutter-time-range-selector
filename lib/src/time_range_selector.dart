@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:time_range_selector/generated/l10n.dart';
 
 import 'models/time_range_state.dart';
 import 'models/time_range.dart';
@@ -8,6 +9,10 @@ import 'time_range_panel/display.dart';
 import 'time_range_panel/panel.dart';
 
 typedef TimeRangeSelectorCallback = void Function(TimeRange timeRange);
+
+class TimeRangeSelectorLocalizations {
+  static var delegate = S.delegate;
+}
 
 class TimeRangeSelector extends StatelessWidget {
   final TimeRange timeRange;

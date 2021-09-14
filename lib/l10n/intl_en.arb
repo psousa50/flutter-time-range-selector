@@ -1,0 +1,10 @@
+{
+  "from": "from",
+  "@from": {
+    "description": "From"
+  },
+  "to": "to",
+  "@to": {
+    "description": "To"
+  }
+}

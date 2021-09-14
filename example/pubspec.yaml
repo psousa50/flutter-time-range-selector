@@ -11,11 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+  cupertino_icons: ^1.0.2
   time_range_selector:
     path: ../
-
-  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
