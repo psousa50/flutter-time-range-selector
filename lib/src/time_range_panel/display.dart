@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:time_range_selector/generated/l10n.dart';
-import 'package:time_range_selector/src/models/time_range.dart';
+
+import '../../generated/l10n.dart';
+import '../../time_range_selector.dart';
+import '../models/time_range.dart';
 
 class TimeRangeDisplay extends StatelessWidget {
   final TimeRange timeRange;
@@ -18,6 +20,7 @@ class TimeRangeDisplay extends StatelessWidget {
   }
 
   Widget buildTimeDisplay(BuildContext context, TimeOfDay? t, String title) {
+    var theme = TimeRangeSelectorTheme.of(context);
     return Expanded(
       child: Center(
         child: Padding(
@@ -26,19 +29,11 @@ class TimeRangeDisplay extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).selectedRowColor,
-                ),
+                style: theme.timeTextDisplayStyle,
               ),
               Text(
                 timeString(t),
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  color: Theme.of(context).selectedRowColor,
-                ),
+                style: theme.timeDisplayStyle,
               ),
             ],
           ),
@@ -50,7 +45,7 @@ class TimeRangeDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).primaryColor,
+      color: TimeRangeSelectorTheme.of(context).primaryColor,
       child: Row(
         children: [
           buildTimeDisplay(context, timeRange.start, S.of(context).from),

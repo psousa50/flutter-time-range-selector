@@ -37,11 +37,24 @@ class Home extends StatelessWidget {
       end: TimeOfDay(hour: 15, minute: 0),
     );
 
+    var theme = TimeRangeSelectorThemeData(
+      primaryColor: Colors.deepPurple,
+      selectedColor: Colors.deepOrange,
+      activeHandlerColor: Colors.amberAccent,
+      handlerColor: Colors.amber,
+      smallLabelTextStyle: TextStyle(color: Colors.red),
+      timeTextDisplayStyle: TextStyle(
+        fontSize: 14,
+      ),
+      handlerRadius: 25,
+    );
+
     void showPicker(BuildContext context) {
       showTimeRangeSelector(
         context: context,
         timeRange: timeRange,
         onTimeRangeChanged: onTimeRangeChanged,
+        theme: theme,
       );
     }
 
@@ -58,6 +71,7 @@ class Home extends StatelessWidget {
             child: TimeRangeSelector(
               timeRange: timeRange,
               onTimeRangeChanged: onTimeRangeChanged,
+              theme: theme,
             ),
           ),
         ],

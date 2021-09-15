@@ -1,21 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:time_range_selector/src/models/time_range_state.dart';
 
+import '../customizations/time_range_selector_theme.dart';
 import '../models/painter_info.dart';
+import '../models/time_range_state.dart';
 import 'canvas_state.dart';
-
-final selectionColor = Colors.blue;
-final handlerRadius = 15.0;
 
 class TimeRangePainter extends CustomPainter {
   final TimeRangeState timeRangeState;
   final TimeRangeInfoCallback onPainterInfoChanged;
+  final TimeRangeSelectorThemeData theme;
 
   TimeRangePainter(
     this.timeRangeState,
     this.onPainterInfoChanged,
+    this.theme,
   );
 
   TimeOfDay fromHour(int hour) {
@@ -29,6 +29,27 @@ class TimeRangePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var canvasInfo = CanvasState(size);
+
+    var selectedLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 8
+      ..strokeCap = StrokeCap.round
+      ..color = theme.selectedColor!;
+
+    final nightLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = theme.nightLineColor!;
+
+    final dayLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = theme.dayLineColor!;
+
+    final horizonLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = theme.horizonColor!;
 
     canvas.drawLine(
       Offset(0, canvasInfo.zeroY),
@@ -74,7 +95,7 @@ class TimeRangePainter extends CustomPainter {
         startTimeHandlerLocalPosition: startTimeHandlerLocalPosition,
         endTimeHandlerLocalPosition: endTimeHandlerLocalPosition,
         canvasSize: size,
-        handlerRadius: handlerRadius,
+        handlerRadius: theme.handlerRadius!,
       ),
     );
   }
@@ -98,22 +119,27 @@ class TimeRangePainter extends CustomPainter {
 
   void drawHandler(Canvas canvas, CanvasState canvasInfo, TimeOfDay t,
       {required bool active}) {
-    var color = active ? selectionColor[500]! : selectionColor[900]!;
+    var color = active ? theme.activeHandlerColor : theme.handlerColor;
     final line = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
-      ..color = color;
+      ..color = color!;
 
     final fill = Paint()
       ..style = PaintingStyle.fill
       ..color = color;
 
     var center = canvasInfo.timeOfDayToScreen(t);
-    canvas.drawCircle(center, handlerRadius, line);
-    canvas.drawCircle(center, handlerRadius * .7, fill);
+    canvas.drawCircle(center, theme.handlerRadius!, line);
+    canvas.drawCircle(center, theme.handlerRadius! * .7, fill);
   }
 
   void drawTicks(Canvas canvas, CanvasState canvasInfo, int step, length) {
+    final tickLine = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = theme.ticksColor!;
+
     for (var i = 0; i <= 24 * 60; i += step) {
       var x = canvasInfo.timeToScreen(fromMinutes(i));
       var y = canvasInfo.zeroY;
@@ -129,7 +155,7 @@ class TimeRangePainter extends CustomPainter {
   }) {
     final textSpan = TextSpan(
       text: hour.toString(),
-      style: small ? smallLabelTextStyle : labelTextStyle,
+      style: small ? theme.smallLabelTextStyle : theme.labelTextStyle,
     );
     final textPainter = TextPainter(
       text: textSpan,
@@ -152,39 +178,3 @@ class TimeRangePainter extends CustomPainter {
     return true;
   }
 }
-
-final nightLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.white;
-
-final dayLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.black;
-
-final horizonLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 2
-  ..color = Colors.grey;
-
-final selectedLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 8
-  ..strokeCap = StrokeCap.round
-  ..color = selectionColor;
-
-final tickLine = Paint()
-  ..style = PaintingStyle.stroke
-  ..strokeWidth = 1
-  ..color = Colors.grey[300]!;
-
-final labelTextStyle = TextStyle(
-  color: Colors.grey[300],
-  fontSize: 16,
-);
-
-final smallLabelTextStyle = TextStyle(
-  color: Colors.grey[300],
-  fontSize: 12,
-);
