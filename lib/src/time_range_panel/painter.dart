@@ -28,7 +28,7 @@ class TimeRangePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var canvasInfo = CanvasState(size);
+    var canvasState = CanvasState(size);
 
     var selectedLine = Paint()
       ..style = PaintingStyle.stroke
@@ -52,44 +52,44 @@ class TimeRangePainter extends CustomPainter {
       ..color = theme.horizonColor!;
 
     canvas.drawLine(
-      Offset(0, canvasInfo.zeroY),
-      Offset(size.width, canvasInfo.zeroY),
+      Offset(0, canvasState.zeroY),
+      Offset(size.width, canvasState.zeroY),
       horizonLine,
     );
 
-    drawLineSegment(canvas, canvasInfo, fromHour(0), fromHour(6), nightLine);
-    drawLineSegment(canvas, canvasInfo, fromHour(6), fromHour(18), dayLine);
-    drawLineSegment(canvas, canvasInfo, fromHour(18), fromHour(24), nightLine);
+    drawLineSegment(canvas, canvasState, fromHour(0), fromHour(6), nightLine);
+    drawLineSegment(canvas, canvasState, fromHour(6), fromHour(18), dayLine);
+    drawLineSegment(canvas, canvasState, fromHour(18), fromHour(24), nightLine);
 
     var timeRange = timeRangeState.timeRange;
     var start = timeRange.start;
     var end = timeRange.end;
     var activeTimeHandler = timeRangeState.activeTimeHandler;
-    drawLineSegment(canvas, canvasInfo, start!, end!, selectedLine);
+    drawLineSegment(canvas, canvasState, start!, end!, selectedLine);
 
-    drawHandler(canvas, canvasInfo, timeRange.start!,
+    drawHandler(canvas, canvasState, timeRange.start!,
         active: activeTimeHandler == ActiveTimeHandler.start);
-    drawHandler(canvas, canvasInfo, timeRange.end!,
+    drawHandler(canvas, canvasState, timeRange.end!,
         active: activeTimeHandler == ActiveTimeHandler.end);
 
-    drawTicks(canvas, canvasInfo, 1 * 60, 5);
-    drawTicks(canvas, canvasInfo, 3 * 60, 10);
-    drawTicks(canvas, canvasInfo, 6 * 60, 20);
+    drawTicks(canvas, canvasState, 1 * 60, 5);
+    drawTicks(canvas, canvasState, 3 * 60, 10);
+    drawTicks(canvas, canvasState, 6 * 60, 20);
 
-    drawXLabel(canvas, canvasInfo, 0);
-    drawXLabel(canvas, canvasInfo, 3, small: true);
-    drawXLabel(canvas, canvasInfo, 6);
-    drawXLabel(canvas, canvasInfo, 9, small: true);
-    drawXLabel(canvas, canvasInfo, 12);
-    drawXLabel(canvas, canvasInfo, 15, small: true);
-    drawXLabel(canvas, canvasInfo, 18);
-    drawXLabel(canvas, canvasInfo, 21, small: true);
-    drawXLabel(canvas, canvasInfo, 24);
+    drawXLabel(canvas, canvasState, 0);
+    drawXLabel(canvas, canvasState, 3, small: true);
+    drawXLabel(canvas, canvasState, 6);
+    drawXLabel(canvas, canvasState, 9, small: true);
+    drawXLabel(canvas, canvasState, 12);
+    drawXLabel(canvas, canvasState, 15, small: true);
+    drawXLabel(canvas, canvasState, 18);
+    drawXLabel(canvas, canvasState, 21, small: true);
+    drawXLabel(canvas, canvasState, 24);
 
     var startTimeHandlerLocalPosition =
-        canvasInfo.timeOfDayToScreen(timeRange.start!);
+        canvasState.timeOfDayToScreen(timeRange.start!);
     var endTimeHandlerLocalPosition =
-        canvasInfo.timeOfDayToScreen(timeRange.end!);
+        canvasState.timeOfDayToScreen(timeRange.end!);
     onPainterInfoChanged(
       TimeRangePainterInfo(
         startTimeHandlerLocalPosition: startTimeHandlerLocalPosition,
@@ -102,14 +102,14 @@ class TimeRangePainter extends CustomPainter {
 
   void drawLineSegment(
     Canvas canvas,
-    CanvasState canvasInfo,
+    CanvasState canvasState,
     TimeOfDay start,
     TimeOfDay end,
     Paint paint,
   ) {
     canvas.drawPoints(
       PointMode.polygon,
-      canvasInfo.timeLineSegment(
+      canvasState.timeLineSegment(
         start,
         end,
       ),
@@ -117,7 +117,7 @@ class TimeRangePainter extends CustomPainter {
     );
   }
 
-  void drawHandler(Canvas canvas, CanvasState canvasInfo, TimeOfDay t,
+  void drawHandler(Canvas canvas, CanvasState canvasState, TimeOfDay t,
       {required bool active}) {
     var color = active ? theme.activeHandlerColor : theme.handlerColor;
     final line = Paint()
@@ -129,27 +129,27 @@ class TimeRangePainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = color;
 
-    var center = canvasInfo.timeOfDayToScreen(t);
+    var center = canvasState.timeOfDayToScreen(t);
     canvas.drawCircle(center, theme.handlerRadius!, line);
     canvas.drawCircle(center, theme.handlerRadius! * .7, fill);
   }
 
-  void drawTicks(Canvas canvas, CanvasState canvasInfo, int step, length) {
+  void drawTicks(Canvas canvas, CanvasState canvasState, int step, length) {
     final tickLine = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
       ..color = theme.ticksColor!;
 
     for (var i = 0; i <= 24 * 60; i += step) {
-      var x = canvasInfo.timeToScreen(fromMinutes(i));
-      var y = canvasInfo.zeroY;
+      var x = canvasState.timeToScreen(fromMinutes(i));
+      var y = canvasState.zeroY;
       canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
     }
   }
 
   void drawXLabel(
     Canvas canvas,
-    CanvasState canvasInfo,
+    CanvasState canvasState,
     int hour, {
     bool small = false,
   }) {
@@ -163,12 +163,12 @@ class TimeRangePainter extends CustomPainter {
     );
     textPainter.layout(
       minWidth: 0,
-      maxWidth: canvasInfo.width,
+      maxWidth: canvasState.width,
     );
 
-    var x = canvasInfo.timeToScreen(fromHour(hour));
+    var x = canvasState.timeToScreen(fromHour(hour));
     x = x - textPainter.width * 0.5;
-    var y = canvasInfo.zeroY + textPainter.height;
+    var y = canvasState.zeroY + textPainter.height;
     final offset = Offset(x, y);
     textPainter.paint(canvas, offset);
   }

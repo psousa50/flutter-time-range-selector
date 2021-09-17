@@ -48,7 +48,7 @@ class CanvasState {
   double get height => size.height;
 
   double timeToScreen(TimeOfDay t) {
-    return screenToMinutes.invertX(t.minutes.toDouble());
+    return screenToMinutes.toInvertedX(t.minutes.toDouble());
   }
 
   TimeOfDay screenToTimeOfDay(double sx) {
@@ -107,7 +107,7 @@ class CoordsTransform {
     return _toX(value, rect1, rect2);
   }
 
-  double invertX(double value) {
+  double toInvertedX(double value) {
     return _toX(value, rect2, rect1);
   }
 
