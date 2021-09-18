@@ -6,6 +6,7 @@ class TimeRangeSelectorThemeData {
   final Color? selectedColor;
   final Color? activeHandlerColor;
   final Color? handlerColor;
+  final Color? activeDigitalColor;
   final Color? dayColor;
   final Color? dayLineColor;
   final Color? nightColor;
@@ -25,6 +26,7 @@ class TimeRangeSelectorThemeData {
     this.selectedColor,
     this.activeHandlerColor,
     this.handlerColor,
+    this.activeDigitalColor,
     this.dayColor,
     this.dayLineColor,
     this.nightColor,
@@ -51,7 +53,7 @@ class TimeRangeSelectorThemeData {
     var labelTextStyle = TextStyle(
       color: ticksColor,
       fontSize: 16,
-    );
+    ).merge(this.labelTextStyle);
 
     var smallLabelTextStyle = labelTextStyle.merge(
       TextStyle(
@@ -64,7 +66,7 @@ class TimeRangeSelectorThemeData {
       fontSize: 26,
       fontWeight: FontWeight.bold,
     ).merge(this.timeDisplayStyle);
-    
+
     var timeTextDisplayStyle = timeDisplayStyle
         .merge(TextStyle(
           fontSize: 14,
@@ -80,6 +82,7 @@ class TimeRangeSelectorThemeData {
         activeHandlerColor:
             this.activeHandlerColor ?? theme.toggleableActiveColor,
         handlerColor: this.handlerColor ?? selectedColor,
+        activeDigitalColor: this.activeDigitalColor ?? onPrimaryColor,
         dayColor: this.dayColor ?? Colors.blue[100],
         dayLineColor: this.dayLineColor ?? Colors.black,
         nightColor: this.nightColor ?? Colors.black,
@@ -108,6 +111,7 @@ class TimeRangeSelectorThemeData {
         other.selectedColor == selectedColor &&
         other.activeHandlerColor == activeHandlerColor &&
         other.handlerColor == handlerColor &&
+        other.activeDigitalColor == activeDigitalColor &&
         other.dayColor == dayColor &&
         other.dayLineColor == dayLineColor &&
         other.nightColor == nightColor &&
@@ -129,6 +133,7 @@ class TimeRangeSelectorThemeData {
         selectedColor.hashCode ^
         activeHandlerColor.hashCode ^
         handlerColor.hashCode ^
+        activeDigitalColor.hashCode ^
         dayColor.hashCode ^
         dayLineColor.hashCode ^
         nightColor.hashCode ^
@@ -149,6 +154,7 @@ class TimeRangeSelectorThemeData {
     Color? selectedColor,
     Color? activeHandlerColor,
     Color? handlerColor,
+    Color? activeDigitalColor,
     Color? dayColor,
     Color? dayLineColor,
     Color? nightColor,
@@ -168,6 +174,7 @@ class TimeRangeSelectorThemeData {
       selectedColor: selectedColor ?? this.selectedColor,
       activeHandlerColor: activeHandlerColor ?? this.activeHandlerColor,
       handlerColor: handlerColor ?? this.handlerColor,
+      activeDigitalColor: activeDigitalColor ?? this.activeDigitalColor,
       dayColor: dayColor ?? this.dayColor,
       dayLineColor: dayLineColor ?? this.dayLineColor,
       nightColor: nightColor ?? this.nightColor,

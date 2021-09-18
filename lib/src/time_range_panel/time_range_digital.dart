@@ -36,7 +36,7 @@ class TimeRangeDigital extends StatelessWidget {
                 timeString(t),
                 style: selected
                     ? theme.timeDisplayStyle!
-                        .merge(TextStyle(color: theme.selectedColor))
+                        .merge(TextStyle(color: theme.activeDigitalColor))
                     : theme.timeDisplayStyle,
               ),
             ],

@@ -15,64 +15,109 @@ class TimeRangeSelectorLocalizations {
   static var delegate = S.delegate;
 }
 
+const defaultVisibleTimeRange = TimeRange(
+  start: TimeOfDay(hour: 0, minute: 0),
+  end: TimeOfDay(hour: 24, minute: 0),
+);
+
 class TimeRangeSelector extends StatelessWidget {
   final TimeRange timeRange;
   final TimeRangeSelectorCallback onTimeRangeChanged;
-  final TimeRangeSelectorThemeData theme;
+  final TimeRange? visibleTimeRange;
+  final TimeRangeSelectorThemeData? theme;
   final int minutesStep;
 
   const TimeRangeSelector({
     required this.timeRange,
     required this.onTimeRangeChanged,
-    this.theme = const TimeRangeSelectorThemeData(),
+    this.visibleTimeRange = defaultVisibleTimeRange,
     this.minutesStep = 10,
+    this.theme = const TimeRangeSelectorThemeData(),
   });
 
   @override
   Widget build(BuildContext context) {
-    var finalTimeRangeSelectorTheme = theme.mergeDefaults(
-        TimeRangeSelectorTheme.of(context), Theme.of(context));
+    var finalTimeRangeSelectorTheme = theme!
+        .mergeDefaults(TimeRangeSelectorTheme.of(context), Theme.of(context));
     var timeRangeState = TimeRangeState(timeRange: timeRange);
 
     return TimeRangeSelectorTheme(
       data: finalTimeRangeSelectorTheme,
       child: ChangeNotifierProvider<TimeRangeState>.value(
           value: timeRangeState,
-          child: Column(
-            children: [
-              Consumer<TimeRangeState>(builder: (context, state, _) {
-                return TimeRangeDigital(state);
-              }),
-              Stack(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 3 / 2,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            color: Colors.blue[100],
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AspectRatio(
-                    aspectRatio: 3 / 2,
-                    child: TimeRangePanel(
-                      onTimeRangeChanged: onTimeRangeChanged,
-                      minutesStep: minutesStep,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          child: TimeRangePanel(
+            onTimeRangeChanged: onTimeRangeChanged,
+            minutesStep: minutesStep,
+            visibleTimeRange: visibleTimeRange!,
           )),
+    );
+  }
+}
+
+class TimeRangePanel extends StatelessWidget {
+  final TimeRangeSelectorCallback onTimeRangeChanged;
+  final int minutesStep;
+  final TimeRange visibleTimeRange;
+
+  const TimeRangePanel({
+    Key? key,
+    required this.onTimeRangeChanged,
+    required this.minutesStep,
+    required this.visibleTimeRange,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = TimeRangeSelectorTheme.of(context);
+    return Column(
+      children: [
+        Consumer<TimeRangeState>(builder: (context, state, _) {
+          return TimeRangeDigital(state);
+        }),
+        Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 2,
+              child: CanvasBackground(theme: theme),
+            ),
+            AspectRatio(
+              aspectRatio: 3 / 2,
+              child: TimeRangePanelCanvas(
+                onTimeRangeChanged: onTimeRangeChanged,
+                minutesStep: minutesStep,
+                visibleTimeRange: visibleTimeRange,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class CanvasBackground extends StatelessWidget {
+  const CanvasBackground({
+    Key? key,
+    required this.theme,
+  }) : super(key: key);
+
+  final TimeRangeSelectorThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            color: theme.dayColor,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            color: theme.nightColor,
+          ),
+        ),
+      ],
     );
   }
 }

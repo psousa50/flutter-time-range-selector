@@ -1,4 +1,6 @@
 {
-    "from": "de",
-    "to": "até"
+  "from": "de",
+  "to": "até",
+  "cancel": "Cancelar",
+  "Ok": "Ok"
 }

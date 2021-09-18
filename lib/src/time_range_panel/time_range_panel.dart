@@ -12,27 +12,22 @@ import '../models/time_range_state.dart';
 import '../time_range_selector.dart';
 import 'gesture_detector.dart';
 
-const defaultVisibleTimeRange = TimeRange(
-  start: TimeOfDay(hour: 0, minute: 0),
-  end: TimeOfDay(hour: 24, minute: 0),
-);
-
-class TimeRangePanel extends StatefulWidget {
+class TimeRangePanelCanvas extends StatefulWidget {
   final TimeRangeSelectorCallback onTimeRangeChanged;
   final int minutesStep;
   final TimeRange visibleTimeRange;
 
-  const TimeRangePanel({
+  const TimeRangePanelCanvas({
     required this.onTimeRangeChanged,
     required this.minutesStep,
-    this.visibleTimeRange = defaultVisibleTimeRange,
+    required this.visibleTimeRange,
   });
 
   @override
-  _TimeRangePanelState createState() => _TimeRangePanelState();
+  _TimeRangePanelCanvasState createState() => _TimeRangePanelCanvasState();
 }
 
-class _TimeRangePanelState extends State<TimeRangePanel> {
+class _TimeRangePanelCanvasState extends State<TimeRangePanelCanvas> {
   TimeRangePainterInfo? _painterInfo;
   Offset _panOffset = Offset.zero;
 

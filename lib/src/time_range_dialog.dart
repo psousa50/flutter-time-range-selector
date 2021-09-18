@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
 import '../time_range_selector.dart';
 
 Future<TimeRange?> showTimeRangeSelector({
   required BuildContext context,
   required TimeRange timeRange,
   required TimeRangeSelectorCallback onTimeRangeChanged,
+  TimeRange? visibleTimeRange,
   TimeRangeSelectorThemeData? theme,
   TransitionBuilder? builder,
   RouteSettings? routeSettings,
@@ -17,13 +19,13 @@ Future<TimeRange?> showTimeRangeSelector({
       mainAxisSize: MainAxisSize.min,
       children: [
         TimeRangeSelector(
-          timeRange: timeRange,
-          onTimeRangeChanged: (timeRange) {
-            localTimeRange = timeRange;
-            onTimeRangeChanged(timeRange);
-          },
-          theme: theme ?? TimeRangeSelectorThemeData(),
-        ),
+            timeRange: timeRange,
+            onTimeRangeChanged: (timeRange) {
+              localTimeRange = timeRange;
+              onTimeRangeChanged(timeRange);
+            },
+            theme: theme,
+            visibleTimeRange: visibleTimeRange),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -33,13 +35,13 @@ Future<TimeRange?> showTimeRangeSelector({
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('CANCEL'),
+                child: Text(S.of(context).Cancel.toUpperCase()),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(localTimeRange);
                 },
-                child: Text('ACCEPT'),
+                child: Text(S.of(context).Ok.toUpperCase()),
               ),
             ],
           ),

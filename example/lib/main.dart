@@ -39,14 +39,29 @@ class Home extends StatelessWidget {
 
     var theme = TimeRangeSelectorThemeData(
       primaryColor: Colors.deepPurple,
+      onPrimaryColor: Colors.yellowAccent,
       selectedColor: Colors.deepOrange,
       activeHandlerColor: Colors.amberAccent,
+      activeDigitalColor: Colors.orange,
       handlerColor: Colors.amber,
+      ticksColor: Colors.green,
+      dayColor: Colors.blue[100],
+      dayLineColor: Colors.blue[900],
+      nightColor: Colors.blue[900],
+      nightLineColor: Colors.blue[100],
+      horizonColor: Colors.red,
+      labelTextStyle: TextStyle(color: Colors.yellow),
       smallLabelTextStyle: TextStyle(color: Colors.red),
       timeTextDisplayStyle: TextStyle(
         fontSize: 14,
       ),
       handlerRadius: 20,
+      margin: EdgeInsets.fromLTRB(50, 10, 50, 0),
+    );
+
+    const visibleTimeRange = TimeRange(
+      start: TimeOfDay(hour: 5, minute: 0),
+      end: TimeOfDay(hour: 18, minute: 0),
     );
 
     void showPicker(BuildContext context) async {
@@ -55,6 +70,7 @@ class Home extends StatelessWidget {
         timeRange: timeRange,
         onTimeRangeChanged: onTimeRangeChanged,
         theme: theme,
+        visibleTimeRange: visibleTimeRange,
       );
       if (tr != null) {
         print("SELECTED: $tr");
@@ -76,7 +92,7 @@ class Home extends StatelessWidget {
             child: TimeRangeSelector(
               timeRange: timeRange,
               onTimeRangeChanged: onTimeRangeChanged,
-              theme: theme,
+              // theme: theme,
               minutesStep: 30,
             ),
           ),
