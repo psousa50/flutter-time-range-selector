@@ -62,7 +62,9 @@ class TimeRangeSelector extends StatelessWidget {
                   ),
                   AspectRatio(
                     aspectRatio: 3 / 2,
-                    child: TimeRangePanel(onTimeRangeChanged),
+                    child: TimeRangePanel(
+                      onTimeRangeChanged: onTimeRangeChanged,
+                    ),
                   ),
                 ],
               ),

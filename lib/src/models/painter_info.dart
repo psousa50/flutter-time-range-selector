@@ -1,17 +1,19 @@
 import 'package:flutter/painting.dart';
 
-typedef TimeRangeInfoCallback = void Function(TimeRangePainterInfo painterInfo);
+typedef TimeRangePainterInfoCallback = void Function(
+    TimeRangePainterInfo painterInfo);
 
 class TimeRangePainterInfo {
   final Offset startTimeHandlerLocalPosition;
   final Offset endTimeHandlerLocalPosition;
-  final Size canvasSize;
   final double handlerRadius;
+  final Rect timeRect;
+  final Rect screenRect;
 
-  TimeRangePainterInfo({
-    required this.startTimeHandlerLocalPosition,
-    required this.endTimeHandlerLocalPosition,
-    required this.canvasSize,
-    required this.handlerRadius,
-  });
+  TimeRangePainterInfo(
+      {required this.startTimeHandlerLocalPosition,
+      required this.endTimeHandlerLocalPosition,
+      required this.handlerRadius,
+      required this.timeRect,
+      required this.screenRect});
 }

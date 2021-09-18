@@ -6,7 +6,7 @@ class TimeRange {
   final TimeOfDay? start;
   final TimeOfDay? end;
 
-  TimeRange({
+  const TimeRange({
     this.start,
     this.end,
   });
