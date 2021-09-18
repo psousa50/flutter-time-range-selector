@@ -49,13 +49,18 @@ class Home extends StatelessWidget {
       handlerRadius: 25,
     );
 
-    void showPicker(BuildContext context) {
-      showTimeRangeSelector(
+    void showPicker(BuildContext context) async {
+      var tr = await showTimeRangeSelector(
         context: context,
         timeRange: timeRange,
         onTimeRangeChanged: onTimeRangeChanged,
         theme: theme,
       );
+      if (tr != null) {
+        print("SELECTED: $tr");
+      } else {
+        print("CANCELED");
+      }
     }
 
     return Center(

@@ -10,6 +10,7 @@ Future<TimeRange?> showTimeRangeSelector({
   TransitionBuilder? builder,
   RouteSettings? routeSettings,
 }) async {
+  var localTimeRange = timeRange;
   final Widget dialog = Dialog(
     elevation: 12,
     child: Column(
@@ -17,7 +18,10 @@ Future<TimeRange?> showTimeRangeSelector({
       children: [
         TimeRangeSelector(
           timeRange: timeRange,
-          onTimeRangeChanged: onTimeRangeChanged,
+          onTimeRangeChanged: (timeRange) {
+            localTimeRange = timeRange;
+            onTimeRangeChanged(timeRange);
+          },
           theme: theme ?? TimeRangeSelectorThemeData(),
         ),
         Padding(
@@ -33,7 +37,7 @@ Future<TimeRange?> showTimeRangeSelector({
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(localTimeRange);
                 },
                 child: Text('ACCEPT'),
               ),
