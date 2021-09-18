@@ -53,7 +53,8 @@ class TimeRangeCanvas {
   }
 
   int toPointsIndex(TimeOfDay t) {
-    return timeToScreen(t).toInt() - screenRect.left.toInt();
+    var i = timeToScreen(t).toInt() - screenRect.left.toInt();
+    return min(points.length - 1, max(0, i));
   }
 
   Offset timeOfDayToScreen(TimeOfDay t) {
@@ -61,8 +62,8 @@ class TimeRangeCanvas {
   }
 
   List<Offset> timeLineSegment(TimeOfDay start, TimeOfDay end) {
-    var x1 = min(points.length - 1, max(0, toPointsIndex(start)));
-    var x2 = min(points.length - 1, max(0, toPointsIndex(end)));
+    var x1 = toPointsIndex(start);
+    var x2 = toPointsIndex(end);
 
     return points.sublist(x1, x2);
   }
@@ -80,6 +81,7 @@ class TimeRangeCanvas {
         var x = transformX(sx, screenRect, sineRect);
         var y = sin(x);
         var sy = transformY(y, sineRect, screenRect);
+        // print("$p - $sx - $x");
         return Offset(sx, sy);
       },
     ).toList();

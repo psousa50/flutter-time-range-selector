@@ -69,7 +69,7 @@ class _TimeRangePanelCanvasState extends State<TimeRangePanelCanvas> {
     var localPosition = box.globalToLocal(globalPosition) - _panOffset;
 
     if (localPosition.dx >= painterInfo.screenRect.left &&
-        localPosition.dx < painterInfo.screenRect.right &&
+        localPosition.dx <= painterInfo.screenRect.right &&
         timeRangeState.activeTimeHandler != null) {
       var minutes = transformX(
               localPosition.dx, painterInfo.screenRect, painterInfo.timeRect)

@@ -92,8 +92,6 @@ class Home extends StatelessWidget {
             child: TimeRangeSelector(
               timeRange: timeRange,
               onTimeRangeChanged: onTimeRangeChanged,
-              // theme: theme,
-              minutesStep: 30,
             ),
           ),
         ],
