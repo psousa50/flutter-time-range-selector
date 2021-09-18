@@ -11,7 +11,6 @@ import '../models/painter_info.dart';
 import '../models/time_range_state.dart';
 import '../time_range_selector.dart';
 import 'gesture_detector.dart';
-import 'painter.dart';
 
 const defaultVisibleTimeRange = TimeRange(
   start: TimeOfDay(hour: 0, minute: 0),
@@ -133,5 +132,38 @@ class _TimeRangePanelState extends State<TimeRangePanel> {
         ),
       );
     });
+  }
+}
+
+class TimeRangePainter extends CustomPainter {
+  final TimeRangeState timeRangeState;
+  final TimeRangePainterInfoCallback onPainterInfoChanged;
+  final TimeRangeSelectorThemeData theme;
+  final TimeRange visibleTimeRange;
+
+  TimeRangePainter(
+    this.timeRangeState,
+    this.onPainterInfoChanged,
+    this.theme,
+    this.visibleTimeRange,
+  );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var timeRangeCanvas = TimeRangeCanvas(
+      timeRangeState,
+      onPainterInfoChanged,
+      theme,
+      canvas,
+      size,
+      visibleTimeRange,
+    );
+
+    timeRangeCanvas.paint();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

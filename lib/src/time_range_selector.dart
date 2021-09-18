@@ -6,8 +6,8 @@ import '../generated/l10n.dart';
 import 'customizations/time_range_selector_theme.dart';
 import 'models/time_range.dart';
 import 'models/time_range_state.dart';
-import 'time_range_panel/display.dart';
-import 'time_range_panel/panel.dart';
+import 'time_range_panel/time_range_digital.dart';
+import 'time_range_panel/time_range_panel.dart';
 
 typedef TimeRangeSelectorCallback = void Function(TimeRange timeRange);
 
@@ -39,7 +39,7 @@ class TimeRangeSelector extends StatelessWidget {
           child: Column(
             children: [
               Consumer<TimeRangeState>(builder: (context, state, _) {
-                return TimeRangeDisplay(state.timeRange);
+                return TimeRangeDigital(state.timeRange);
               }),
               Stack(
                 children: [

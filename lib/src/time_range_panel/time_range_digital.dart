@@ -4,10 +4,10 @@ import '../../generated/l10n.dart';
 import '../../time_range_selector.dart';
 import '../models/time_range.dart';
 
-class TimeRangeDisplay extends StatelessWidget {
+class TimeRangeDigital extends StatelessWidget {
   final TimeRange timeRange;
 
-  const TimeRangeDisplay(this.timeRange);
+  const TimeRangeDigital(this.timeRange);
 
   String _addLeadingZeroIfNeeded(int value) {
     return (value < 10) ? "0$value" : "$value";
