@@ -19,11 +19,13 @@ class TimeRangeSelector extends StatelessWidget {
   final TimeRange timeRange;
   final TimeRangeSelectorCallback onTimeRangeChanged;
   final TimeRangeSelectorThemeData theme;
+  final int minutesStep;
 
   const TimeRangeSelector({
     required this.timeRange,
     required this.onTimeRangeChanged,
     this.theme = const TimeRangeSelectorThemeData(),
+    this.minutesStep = 10,
   });
 
   @override
@@ -39,7 +41,7 @@ class TimeRangeSelector extends StatelessWidget {
           child: Column(
             children: [
               Consumer<TimeRangeState>(builder: (context, state, _) {
-                return TimeRangeDigital(state.timeRange);
+                return TimeRangeDigital(state);
               }),
               Stack(
                 children: [
@@ -64,6 +66,7 @@ class TimeRangeSelector extends StatelessWidget {
                     aspectRatio: 3 / 2,
                     child: TimeRangePanel(
                       onTimeRangeChanged: onTimeRangeChanged,
+                      minutesStep: minutesStep,
                     ),
                   ),
                 ],

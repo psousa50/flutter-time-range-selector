@@ -13,8 +13,6 @@ final sineRect0 = Rect.fromLTRB(-pi / 2, 1, 3 * pi / 2, -1);
 final timeRect0 = Rect.fromLTRB(0, 1, 24 * 60, -1);
 
 class TimeRangeCanvas {
-  final xMargin = 20.0;
-  final yMargin = 10.0;
   final TimeRangeState timeRangeState;
   final TimeRangePainterInfoCallback onPainterInfoChanged;
   final TimeRangeSelectorThemeData theme;
@@ -33,11 +31,12 @@ class TimeRangeCanvas {
     this.size,
     this.visibleTimeRange,
   ) {
+    var margin = theme.margin!;
     screenRect = Rect.fromLTRB(
-      xMargin,
-      yMargin,
-      size.width - xMargin,
-      size.height - yMargin,
+      margin.left,
+      margin.top,
+      size.width - margin.right,
+      size.height - margin.bottom,
     );
     var tx1 = visibleTimeRange.start!.minutes.toDouble();
     var tx2 = visibleTimeRange.end!.minutes.toDouble();

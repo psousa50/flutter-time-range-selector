@@ -24,7 +24,7 @@ class TimeRangePanel extends StatefulWidget {
 
   const TimeRangePanel({
     required this.onTimeRangeChanged,
-    this.minutesStep = 10,
+    required this.minutesStep,
     this.visibleTimeRange = defaultVisibleTimeRange,
   });
 

@@ -46,7 +46,7 @@ class Home extends StatelessWidget {
       timeTextDisplayStyle: TextStyle(
         fontSize: 14,
       ),
-      handlerRadius: 25,
+      handlerRadius: 20,
     );
 
     void showPicker(BuildContext context) async {
@@ -77,6 +77,7 @@ class Home extends StatelessWidget {
               timeRange: timeRange,
               onTimeRangeChanged: onTimeRangeChanged,
               theme: theme,
+              minutesStep: 30,
             ),
           ),
         ],

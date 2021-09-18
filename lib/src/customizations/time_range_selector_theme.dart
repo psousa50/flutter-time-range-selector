@@ -17,6 +17,7 @@ class TimeRangeSelectorThemeData {
   final TextStyle? timeDisplayStyle;
   final TextStyle? timeTextDisplayStyle;
   final double? handlerRadius;
+  final EdgeInsets? margin;
 
   const TimeRangeSelectorThemeData({
     this.primaryColor,
@@ -35,6 +36,7 @@ class TimeRangeSelectorThemeData {
     this.timeDisplayStyle,
     this.timeTextDisplayStyle,
     this.handlerRadius,
+    this.margin,
   });
 
   TimeRangeSelectorThemeData mergeDefaults(
@@ -62,6 +64,7 @@ class TimeRangeSelectorThemeData {
       fontSize: 26,
       fontWeight: FontWeight.bold,
     ).merge(this.timeDisplayStyle);
+    
     var timeTextDisplayStyle = timeDisplayStyle
         .merge(TextStyle(
           fontSize: 14,
@@ -69,25 +72,30 @@ class TimeRangeSelectorThemeData {
         ))
         .merge(this.timeTextDisplayStyle);
 
+    var handlerRadius = this.handlerRadius ?? 20;
     return copyWith(
-      primaryColor: primaryColor,
-      onPrimaryColor: onPrimaryColor,
-      selectedColor: selectedColor,
-      activeHandlerColor:
-          this.activeHandlerColor ?? theme.toggleableActiveColor,
-      handlerColor: this.handlerColor ?? selectedColor,
-      dayColor: this.dayColor ?? Colors.blue[100],
-      dayLineColor: this.dayLineColor ?? Colors.black,
-      nightColor: this.nightColor ?? Colors.black,
-      nightLineColor: nightLineColor ?? Colors.white,
-      horizonColor: this.horizonColor ?? Colors.grey,
-      ticksColor: this.ticksColor ?? Colors.grey[300],
-      labelTextStyle: labelTextStyle,
-      smallLabelTextStyle: smallLabelTextStyle,
-      timeTextDisplayStyle: timeTextDisplayStyle,
-      timeDisplayStyle: timeDisplayStyle,
-      handlerRadius: this.handlerRadius ?? 20,
-    );
+        primaryColor: primaryColor,
+        onPrimaryColor: onPrimaryColor,
+        selectedColor: selectedColor,
+        activeHandlerColor:
+            this.activeHandlerColor ?? theme.toggleableActiveColor,
+        handlerColor: this.handlerColor ?? selectedColor,
+        dayColor: this.dayColor ?? Colors.blue[100],
+        dayLineColor: this.dayLineColor ?? Colors.black,
+        nightColor: this.nightColor ?? Colors.black,
+        nightLineColor: nightLineColor ?? Colors.white,
+        horizonColor: this.horizonColor ?? Colors.grey,
+        ticksColor: this.ticksColor ?? Colors.grey[300],
+        labelTextStyle: labelTextStyle,
+        smallLabelTextStyle: smallLabelTextStyle,
+        timeTextDisplayStyle: timeTextDisplayStyle,
+        timeDisplayStyle: timeDisplayStyle,
+        handlerRadius: handlerRadius,
+        margin: this.margin ??
+            EdgeInsets.symmetric(
+              horizontal: handlerRadius,
+              vertical: handlerRadius,
+            ));
   }
 
   @override
@@ -110,7 +118,8 @@ class TimeRangeSelectorThemeData {
         other.smallLabelTextStyle == smallLabelTextStyle &&
         other.timeDisplayStyle == timeDisplayStyle &&
         other.timeTextDisplayStyle == timeTextDisplayStyle &&
-        other.handlerRadius == handlerRadius;
+        other.handlerRadius == handlerRadius &&
+        other.margin == margin;
   }
 
   @override
@@ -130,7 +139,8 @@ class TimeRangeSelectorThemeData {
         smallLabelTextStyle.hashCode ^
         timeDisplayStyle.hashCode ^
         timeTextDisplayStyle.hashCode ^
-        handlerRadius.hashCode;
+        handlerRadius.hashCode ^
+        margin.hashCode;
   }
 
   TimeRangeSelectorThemeData copyWith({
@@ -150,6 +160,7 @@ class TimeRangeSelectorThemeData {
     TextStyle? timeDisplayStyle,
     TextStyle? timeTextDisplayStyle,
     double? handlerRadius,
+    EdgeInsets? margin,
   }) {
     return TimeRangeSelectorThemeData(
       primaryColor: primaryColor ?? this.primaryColor,
@@ -168,6 +179,7 @@ class TimeRangeSelectorThemeData {
       timeDisplayStyle: timeDisplayStyle ?? this.timeDisplayStyle,
       timeTextDisplayStyle: timeTextDisplayStyle ?? this.timeTextDisplayStyle,
       handlerRadius: handlerRadius ?? this.handlerRadius,
+      margin: margin ?? this.margin,
     );
   }
 }
