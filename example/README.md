@@ -1,4 +1,4 @@
-# example
+# Time Range Selector example
 
 A new Flutter project.
 
