@@ -7,8 +7,9 @@ Future<TimeRange?> showTimeRangeSelector({
   required BuildContext context,
   required TimeRange timeRange,
   TimeRangeSelectorCallback? onTimeRangeChanged,
-  TimeRange? visibleTimeRange,
   TimeRangeSelectorThemeData? theme,
+  TimeRange? visibleTimeRange,
+  int? minutesStep,
   TransitionBuilder? builder,
   RouteSettings? routeSettings,
 }) async {
@@ -25,7 +26,8 @@ Future<TimeRange?> showTimeRangeSelector({
               onTimeRangeChanged?.call(timeRange);
             },
             theme: theme,
-            visibleTimeRange: visibleTimeRange),
+            visibleTimeRange: visibleTimeRange,
+            minutesStep: minutesStep),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
