@@ -6,7 +6,7 @@ import '../time_range_selector.dart';
 Future<TimeRange?> showTimeRangeSelector({
   required BuildContext context,
   required TimeRange timeRange,
-  required TimeRangeSelectorCallback onTimeRangeChanged,
+  TimeRangeSelectorCallback? onTimeRangeChanged,
   TimeRange? visibleTimeRange,
   TimeRangeSelectorThemeData? theme,
   TransitionBuilder? builder,
@@ -22,7 +22,7 @@ Future<TimeRange?> showTimeRangeSelector({
             timeRange: timeRange,
             onTimeRangeChanged: (timeRange) {
               localTimeRange = timeRange;
-              onTimeRangeChanged(timeRange);
+              onTimeRangeChanged?.call(timeRange);
             },
             theme: theme,
             visibleTimeRange: visibleTimeRange),

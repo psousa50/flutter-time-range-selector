@@ -23,22 +23,26 @@ const defaultVisibleTimeRange = TimeRange(
 class TimeRangeSelector extends StatelessWidget {
   final TimeRange timeRange;
   final TimeRangeSelectorCallback onTimeRangeChanged;
-  final TimeRange? visibleTimeRange;
-  final TimeRangeSelectorThemeData? theme;
-  final int minutesStep;
+  late final TimeRange visibleTimeRange;
+  late final TimeRangeSelectorThemeData theme;
+  late final int minutesStep;
 
-  const TimeRangeSelector({
+  TimeRangeSelector({
     required this.timeRange,
     required this.onTimeRangeChanged,
-    this.visibleTimeRange = defaultVisibleTimeRange,
-    this.minutesStep = 10,
-    this.theme = const TimeRangeSelectorThemeData(),
-  });
+    visibleTimeRange = defaultVisibleTimeRange,
+    minutesStep,
+    theme,
+  }) {
+    this.visibleTimeRange = visibleTimeRange ?? defaultVisibleTimeRange;
+    this.theme = theme ?? TimeRangeSelectorThemeData();
+    this.minutesStep = minutesStep ?? 10;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var finalTimeRangeSelectorTheme = theme!
-        .mergeDefaults(TimeRangeSelectorTheme.of(context), Theme.of(context));
+    var finalTimeRangeSelectorTheme = theme.mergeDefaults(
+        TimeRangeSelectorTheme.of(context), Theme.of(context));
     var timeRangeState = TimeRangeState(timeRange: timeRange);
 
     return TimeRangeSelectorTheme(
@@ -48,7 +52,7 @@ class TimeRangeSelector extends StatelessWidget {
           child: TimeRangePanel(
             onTimeRangeChanged: onTimeRangeChanged,
             minutesStep: minutesStep,
-            visibleTimeRange: visibleTimeRange!,
+            visibleTimeRange: visibleTimeRange,
           )),
     );
   }
