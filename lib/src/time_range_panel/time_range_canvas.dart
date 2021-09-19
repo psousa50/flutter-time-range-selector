@@ -197,8 +197,10 @@ class TimeRangeCanvas {
 
     for (var i = 0; i <= 24 * 60; i += step) {
       var x = timeToScreen(fromMinutes(i));
-      var y = zeroY;
-      canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
+      if (x >= screenRect.left && x <= screenRect.right) {
+        var y = zeroY;
+        canvas.drawLine(Offset(x, y), Offset(x, y + length), tickLine);
+      }
     }
   }
 
@@ -220,10 +222,12 @@ class TimeRangeCanvas {
     );
 
     var x = timeToScreen(fromHour(hour));
-    x = x - textPainter.width * 0.5;
-    var y = zeroY + textPainter.height;
-    final offset = Offset(x, y);
-    textPainter.paint(canvas, offset);
+    if (x >= screenRect.left && x <= screenRect.right) {
+      x = x - textPainter.width * 0.5;
+      var y = zeroY + textPainter.height;
+      final offset = Offset(x, y);
+      textPainter.paint(canvas, offset);
+    }
   }
 }
 

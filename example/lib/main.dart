@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // theme: ThemeData.dark(),
       supportedLocales:
           TimeRangeSelectorLocalizations.delegate.supportedLocales,
       localizationsDelegates: [
@@ -34,7 +35,7 @@ class Home extends StatelessWidget {
 
     var timeRange = TimeRange(
       start: TimeOfDay(hour: 7, minute: 0),
-      end: TimeOfDay(hour: 15, minute: 0),
+      end: TimeOfDay(hour: 21, minute: 0),
     );
 
     var theme = TimeRangeSelectorThemeData(
@@ -61,7 +62,7 @@ class Home extends StatelessWidget {
 
     const visibleTimeRange = TimeRange(
       start: TimeOfDay(hour: 5, minute: 0),
-      end: TimeOfDay(hour: 18, minute: 0),
+      end: TimeOfDay(hour: 20, minute: 0),
     );
 
     void showPicker(BuildContext context) async {

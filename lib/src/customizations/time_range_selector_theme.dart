@@ -48,7 +48,8 @@ class TimeRangeSelectorThemeData {
         (ThemeData.estimateBrightnessForColor(primaryColor) == Brightness.light
             ? Colors.black
             : Colors.white);
-    var selectedColor = this.selectedColor ?? primaryColor;
+    var selectedColor =
+        this.selectedColor ?? theme.colorScheme.secondaryVariant;
 
     var labelTextStyle = TextStyle(
       color: ticksColor,
@@ -80,9 +81,9 @@ class TimeRangeSelectorThemeData {
         onPrimaryColor: onPrimaryColor,
         selectedColor: selectedColor,
         activeHandlerColor:
-            this.activeHandlerColor ?? theme.toggleableActiveColor,
-        handlerColor: this.handlerColor ?? selectedColor,
-        activeDigitalColor: this.activeDigitalColor ?? onPrimaryColor,
+            this.activeHandlerColor ?? theme.colorScheme.onPrimary,
+        handlerColor: this.handlerColor ?? theme.colorScheme.secondary,
+        activeDigitalColor: this.activeDigitalColor ?? selectedColor,
         dayColor: this.dayColor ?? Colors.blue[100],
         dayLineColor: this.dayLineColor ?? Colors.black,
         nightColor: this.nightColor ?? Colors.black,
