@@ -21,7 +21,7 @@ class TimeRangeCanvas {
   final TimeRange visibleTimeRange;
   late final Rect timeRect;
   late final Rect screenRect;
-  late final List<Offset> points;
+  late final List<Offset> linePoints;
 
   TimeRangeCanvas(
     this.timeRangeState,
@@ -41,7 +41,7 @@ class TimeRangeCanvas {
     var tx1 = visibleTimeRange.start!.minutes.toDouble();
     var tx2 = visibleTimeRange.end!.minutes.toDouble();
     timeRect = Rect.fromLTRB(tx1, 0, tx2, 0);
-    points = buildPoints();
+    linePoints = buildLinePoints();
   }
 
   double get width => size.width;
@@ -52,23 +52,23 @@ class TimeRangeCanvas {
     return transformX(t.minutes.toDouble(), timeRect, screenRect);
   }
 
-  int toPointsIndex(TimeOfDay t) {
+  int toLinePointsIndex(TimeOfDay t) {
     var i = timeToScreen(t).toInt() - screenRect.left.toInt();
-    return min(points.length - 1, max(0, i));
+    return min(linePoints.length - 1, max(0, i));
   }
 
   Offset timeOfDayToScreen(TimeOfDay t) {
-    return points[toPointsIndex(t)];
+    return linePoints[toLinePointsIndex(t)];
   }
 
   List<Offset> timeLineSegment(TimeOfDay start, TimeOfDay end) {
-    var x1 = toPointsIndex(start);
-    var x2 = toPointsIndex(end);
+    var x1 = toLinePointsIndex(start);
+    var x2 = toLinePointsIndex(end);
 
-    return points.sublist(x1, x2);
+    return linePoints.sublist(x1, x2);
   }
 
-  List<Offset> buildPoints() {
+  List<Offset> buildLinePoints() {
     var sineRect = Rect.fromLTRB(
       transformX(timeRect.left, timeRect0, sineRect0),
       sineRect0.top,
@@ -81,7 +81,6 @@ class TimeRangeCanvas {
         var x = transformX(sx, screenRect, sineRect);
         var y = sin(x);
         var sy = transformY(y, sineRect, screenRect);
-        // print("$p - $sx - $x");
         return Offset(sx, sy);
       },
     ).toList();
